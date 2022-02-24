@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
+import androidx.fragment.app.setFragmentResultListener
 import br.edu.ifsp.scl.sdm.pa2.pedrapapeltesourafragments.databinding.FragmentMainBinding
 import java.util.*
 
@@ -59,42 +61,67 @@ class MainFragment : Fragment(), View.OnClickListener{
         mainFragmentMainBinding.btnPedra.setOnClickListener(this)
         mainFragmentMainBinding.btnTesoura.setOnClickListener(this)
 
-
-        editarActivityResultLauncher = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result?.resultCode == AppCompatActivity.RESULT_OK){
-                with(result){
-                    data?.getIntExtra("RODADA",0).takeIf { it!=null }.let{
-                        when(it){
-                            1 -> {rodadaGame = 1
-                                Log.v("rodada", "$rodadaGame")}
-                            3 -> {rodadaGame = 3
-                                Log.v("rodada", "$rodadaGame")}
-                            5 -> {rodadaGame = 5
-                                Log.v("rodada", "$rodadaGame")}
-                            else -> {}
-                        }
-                        rodadas = 1
-                        pontJ1 = 0
-                        pontJ2 = 0
-                        pontJ1_vs_3 = 0
-                        pontJ2_vs_3 = 0
-                        pontJ3_vs_3 = 0
-                    }
-                    data?.getIntExtra("JOGADORES",0).takeIf { it!=null }.let{
-                        when(it){
-                            0 -> {jogadores = 2
-                                Log.v("jogadores", "$jogadores")
-                            }
-                            1 -> {jogadores = 3
-                                Log.v("jogadores", "$jogadores")
-                            }
-                            else -> {}
-                        }
-                    }
+        setFragmentResultListener("requestKey"){ requestKey, bundle ->
+            when(bundle.getInt("RODADA")){
+                1 -> {rodadaGame = 1
+                    Log.v("rodada", "$rodadaGame")}
+                3 -> {rodadaGame = 3
+                    Log.v("rodada", "$rodadaGame")}
+                5 -> {rodadaGame = 5
+                    Log.v("rodada", "$rodadaGame")}
+                else -> {}
+            }
+            rodadas = 1
+            pontJ1 = 0
+            pontJ2 = 0
+            pontJ1_vs_3 = 0
+            pontJ2_vs_3 = 0
+            pontJ3_vs_3 = 0
+            when(bundle.getInt("JOGADORES")){
+                0 -> {jogadores = 2
+                    Log.v("jogadores", "$jogadores")
                 }
+                1 -> {jogadores = 3
+                    Log.v("jogadores", "$jogadores")
+                }
+                else -> {}
             }
         }
+//        editarActivityResultLauncher = registerForActivityResult(
+//            ActivityResultContracts.StartActivityForResult()) { result ->
+//            if (result?.resultCode == AppCompatActivity.RESULT_OK){
+//                with(result){
+//                    data?.getIntExtra("RODADA",0).takeIf { it!=null }.let{
+//                        when(it){
+//                            1 -> {rodadaGame = 1
+//                                Log.v("rodada", "$rodadaGame")}
+//                            3 -> {rodadaGame = 3
+//                                Log.v("rodada", "$rodadaGame")}
+//                            5 -> {rodadaGame = 5
+//                                Log.v("rodada", "$rodadaGame")}
+//                            else -> {}
+//                        }
+//                        rodadas = 1
+//                        pontJ1 = 0
+//                        pontJ2 = 0
+//                        pontJ1_vs_3 = 0
+//                        pontJ2_vs_3 = 0
+//                        pontJ3_vs_3 = 0
+//                    }
+//                    data?.getIntExtra("JOGADORES",0).takeIf { it!=null }.let{
+//                        when(it){
+//                            0 -> {jogadores = 2
+//                                Log.v("jogadores", "$jogadores")
+//                            }
+//                            1 -> {jogadores = 3
+//                                Log.v("jogadores", "$jogadores")
+//                            }
+//                            else -> {}
+//                        }
+//                    }
+//                }
+//            }
+//        }
 
         return mainFragmentMainBinding.root
     }
@@ -206,18 +233,18 @@ class MainFragment : Fragment(), View.OnClickListener{
 
     }
 
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-        savedInstanceState?.getInt("RODADA").takeIf { true }.let {
-            if (it != null) {
-                rodadaGame = it
-            }
-        }
-        savedInstanceState?.getInt("JOGADORES").takeIf { true }.let {
-            if (it != null) {
-                jogadores = it
-            }
-        }
-    }
+//    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+//        super.onRestoreInstanceState(savedInstanceState)
+//        savedInstanceState?.getInt("RODADA").takeIf { true }.let {
+//            if (it != null) {
+//                rodadaGame = it
+//            }
+//        }
+//        savedInstanceState?.getInt("JOGADORES").takeIf { true }.let {
+//            if (it != null) {
+//                jogadores = it
+//            }
+//        }
+//    }
 
 }
